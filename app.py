@@ -7,26 +7,17 @@ from dicttoxml import dicttoxml
 
 app = Flask(__name__)
 
-# -------------------------
-# DATABASE CONFIG
-# -------------------------
 app.config["MYSQL_HOST"] = "localhost"
 app.config["MYSQL_USER"] = "root"
 app.config["MYSQL_PASSWORD"] = "110515"
 app.config["MYSQL_DB"] = "hospital"
 app.config["MYSQL_CURSORCLASS"] = "DictCursor"
 
-# -------------------------
-# JWT CONFIG
-# -------------------------
 app.config["JWT_SECRET_KEY"] = "finals-secret-key"
 jwt = JWTManager(app)
 
 mysql = MySQL(app)
 
-# -------------------------
-# HELPER FUNCTIONS
-# -------------------------
 def execute_query(query, params=None):
     cur = mysql.connection.cursor()
     cur.execute(query, params)
@@ -43,15 +34,11 @@ def format_response(data, status=200):
     return make_response(jsonify(data), status)
 
 
-# -------------------------
-# HOME
-# -------------------------
 @app.route("/")
 def index():
     return jsonify({
         "message": "Hospital Management REST API",
         "endpoints": [
-            "POST /login",
             "GET /patients",
             "GET /patients/<id>",
             "POST /patients",
@@ -65,9 +52,6 @@ def index():
     })
 
 
-# -------------------------
-# AUTHENTICATION
-# -------------------------
 @app.route("/login", methods=["POST"])
 def login():
     data = request.json
@@ -82,9 +66,6 @@ def login():
     return format_response({"error": "Invalid credentials"}, 401)
 
 
-# -------------------------
-# PATIENTS CRUD
-# -------------------------
 @app.route("/patients", methods=["GET"])
 def get_patients():
     data = execute_query("""
@@ -200,9 +181,6 @@ def delete_patient(idPatient):
         cur.close()
 
 
-# -------------------------
-# SEARCH
-# -------------------------
 @app.route("/patients/search", methods=["GET"])
 def search_patients():
     name = request.args.get("name")
@@ -233,9 +211,6 @@ def search_patients():
     return format_response(data)
 
 
-# -------------------------
-# PATIENT DOCTORS
-# -------------------------
 @app.route("/patients/<int:idPatient>/doctors", methods=["GET"])
 def get_patient_doctors(idPatient):
     data = execute_query("""
@@ -252,9 +227,6 @@ def get_patient_doctors(idPatient):
     return format_response(data)
 
 
-# -------------------------
-# DOCTORS & DIAGNOSIS
-# -------------------------
 @app.route("/doctors", methods=["GET"])
 def get_doctors():
     return format_response(execute_query("SELECT * FROM doctors"))
@@ -265,8 +237,5 @@ def get_diagnosis():
     return format_response(execute_query("SELECT * FROM diagnosis"))
 
 
-# -------------------------
-# RUN SERVER
-# -------------------------
 if __name__ == "__main__":
     app.run(debug=True)
