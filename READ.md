@@ -18,7 +18,6 @@ dicttoxml (XML formatting)
 
 ## Installation & Setup
 1️⃣ Clone the Repository git clone https://github.com/YOUR_USERNAME/YOUR_REPOSITORY.git
-cd YOUR_REPOSITORY
 
 ## Create & Activate Virtual Environment
 source venv/Scripts/activate
